@@ -23,6 +23,7 @@ colors for 256-color terminals (or otherwise).
 | Variable        | Description             | Default value    |
 | --------------- | ----------------------- | ---------------- |
 | BRANCH_COLOR    | Git branch name color   | 81 (or cyan)     |
+| ERROR_COLOR     | Error value color       | 161 (or red)     |
 | HOST_COLOR      | Host name color         | 166 (or yellow)  |
 | INDEXED_COLOR   | Git indexed color       | 118 (or green)   |
 | INDEXED_IND     | Git indexed indicator   | ●                |

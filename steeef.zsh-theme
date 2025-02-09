@@ -61,5 +61,5 @@ fi
 
 PS1='
 %F{${USER_COLOR}}%n%f at %F{${HOST_COLOR}}%m%f in %F{${PWD_COLOR}}%~%f${(e)git_info[prompt]}${VIRTUAL_ENV:+" (%F{blue}${VIRTUAL_ENV:t}%f)"}${duration_info}
-%(!.#.$) '
+%(?..%B(%F{${ERROR_COLOR}}%?%f%) %b)%(!.#.$) '
 unset RPS1
