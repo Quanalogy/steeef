@@ -14,6 +14,7 @@ if (( terminfo[colors] >= 256 )); then
   if (( ! ${+UNINDEXED_COLOR} )) typeset -g UNINDEXED_COLOR=166
   if (( ! ${+INDEXED_COLOR} )) typeset -g INDEXED_COLOR=118
   if (( ! ${+UNTRACKED_COLOR} )) typeset -g UNTRACKED_COLOR=161
+  if (( ! ${+ERROR_COLOR} )) typeset -g ERROR_COLOR=161
 else
   if (( ! ${+USER_COLOR} )) typeset -g USER_COLOR=magenta
   if (( ! ${+HOST_COLOR} )) typeset -g HOST_COLOR=yellow
@@ -22,6 +23,7 @@ else
   if (( ! ${+UNINDEXED_COLOR} )) typeset -g UNINDEXED_COLOR=yellow
   if (( ! ${+INDEXED_COLOR} )) typeset -g INDEXED_COLOR=green
   if (( ! ${+UNTRACKED_COLOR} )) typeset -g UNTRACKED_COLOR=red
+  if (( ! ${+ERROR_COLOR} )) typeset -g ERROR_COLOR=red
 fi
 if (( ! ${+UNINDEXED_IND} )) typeset -g UNINDEXED_IND=●
 if (( ! ${+INDEXED_IND} )) typeset -g INDEXED_IND=●
@@ -29,6 +31,15 @@ if (( ! ${+UNTRACKED_IND} )) typeset -g UNTRACKED_IND=●
 typeset -g VIRTUAL_ENV_DISABLE_PROMPT=1
 
 setopt nopromptbang prompt{cr,percent,sp,subst}
+
+autoload -Uz add-zsh-hook
+# Depends on duration-info module to show last command duration
+if (( ${+functions[duration-info-preexec]} && \
+    ${+functions[duration-info-precmd]} )); then
+  zstyle ':zim:duration-info' format ' took %B%F{yellow}%d%f%b'
+  add-zsh-hook preexec duration-info-preexec
+  add-zsh-hook precmd duration-info-precmd
+fi
 
 typeset -gA git_info
 if (( ${+functions[git-info]} )); then
@@ -45,10 +56,10 @@ if (( ${+functions[git-info]} )); then
   zstyle ':zim:git-info:keys' format \
       'prompt' ' (%F{${BRANCH_COLOR}}%b%c%I%i%u%f%S%f)%s'
 
-  autoload -Uz add-zsh-hook && add-zsh-hook precmd git-info
+  add-zsh-hook precmd git-info
 fi
 
 PS1='
-%F{${USER_COLOR}}%n%f at %F{${HOST_COLOR}}%m%f in %F{${PWD_COLOR}}%~%f${(e)git_info[prompt]}${VIRTUAL_ENV:+" (%F{blue}${VIRTUAL_ENV:t}%f)"}
-%(!.#.$) '
+%F{${USER_COLOR}}%n%f at %F{${HOST_COLOR}}%m%f in %F{${PWD_COLOR}}%~%f${(e)git_info[prompt]}${VIRTUAL_ENV:+" (%F{blue}${VIRTUAL_ENV:t}%f)"}${duration_info}
+%(?..%B(%F{${ERROR_COLOR}}%?%f%) %b)%(!.#.$) '
 unset RPS1
